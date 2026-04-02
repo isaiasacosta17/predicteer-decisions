@@ -15,8 +15,8 @@
 html{scroll-behavior:smooth}
 body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--light)}
 img{display:block;max-width:100%}
-.cursor{position:fixed;width:8px;height:8px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
-.cursor-ring{position:fixed;width:30px;height:30px;border:1.5px solid rgba(26,86,219,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
@@ -28,13 +28,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 .nav-cta{background:var(--blue);color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s}
 .nav-cta:hover{background:var(--blue2)}
 .container{max-width:960px;margin:0 auto;padding:0 48px}
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal{opacity:1;transform:none}.reveal.animate{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
 /* PAGE HEADER */
 .page-header{background:var(--navy);padding:120px 0 80px;text-align:center}
 .page-header .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#93c5fd;display:block;margin-bottom:16px}
 .page-header h1{font-size:clamp(36px,5vw,58px);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px}
-.page-header p{font-size:17px;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto;line-height:1.6}
+.page-header p{font-size:17px;color:rgba(255,255,255,0.78);max-width:480px;margin:0 auto;line-height:1.6}
 /* CHANNELS */
 .channels-section{padding:80px 0}
 .channels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:64px}
@@ -49,7 +49,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 /* DIAG CTA */
 .diag-cta{background:var(--navy);border-radius:20px;padding:56px 48px;text-align:center}
 .diag-cta h2{font-size:clamp(26px,3.5vw,40px);font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:12px;line-height:1.1}
-.diag-cta p{font-size:16px;color:rgba(255,255,255,0.5);margin-bottom:28px;line-height:1.6}
+.diag-cta p{font-size:16px;color:rgba(255,255,255,0.78);margin-bottom:28px;line-height:1.6}
 .btn-white{background:#fff;color:var(--navy);font-size:15px;font-weight:700;padding:15px 32px;border-radius:10px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
 .btn-white:hover{transform:translateY(-2px)}
 .diag-note{font-size:12px;color:rgba(255,255,255,0.3);margin-top:14px}
@@ -66,9 +66,6 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
 </style>
 </head>
 <body>
-<div class="cursor" id="cur"></div>
-<div class="cursor-ring" id="curRing"></div>
-
 <nav>
   <a href="index.html" class="nav-logo">
     <div class="nav-logo-icon">
@@ -146,16 +143,13 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
 </footer>
 
 <script>
-const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a)})();
 document.querySelectorAll('a,button').forEach(el=>{
   el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='44px';ring.style.height='44px'});
   el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='30px';ring.style.height='30px'});
 });
-const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.remove('animate');x.target.classList.add('visible')}}),{threshold:0.05,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('animate');obs.observe(el)});
 </script>
 </body>
 </html>
