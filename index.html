@@ -9,7 +9,7 @@
 :root{
   --dark:#0d1117;--dark2:#111920;--light:#ffffff;--light2:#f7f8fa;--light3:#eef0f4;
   --blue:#1a56db;--blue2:#1e40af;--blue-light:#dbeafe;--navy:#0f172a;
-  --text-dark:#0f172a;--text-mid:#374151;--text-muted:#6b7280;--text-light:#f9fafb;
+  --text-dark:#0f172a;--text-mid:#1f2937;--text-muted:#4b5563;--text-light:#f9fafb;
   --green:#059669;--amber:#d97706;
   --border-light:rgba(0,0,0,0.08);--border-dark:rgba(255,255,255,0.1);
   --shadow:0 4px 24px rgba(0,0,0,0.08);--shadow-lg:0 16px 60px rgba(0,0,0,0.12);
@@ -27,12 +27,18 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .nav-logo-text .brand{font-size:15px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);display:block;line-height:1.1}
 .nav-logo-text .tag{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
 .nav-links{display:flex;align-items:center;gap:28px}
-.nav-links a{font-size:13px;font-weight:500;color:var(--text-mid);text-decoration:none;transition:color .2s}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s;display:block}
+.mobile-menu{display:none;position:fixed;top:72px;left:0;right:0;background:#fff;border-bottom:1px solid var(--border-light);padding:20px 24px;flex-direction:column;gap:0;z-index:199;box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--text-mid);text-decoration:none;padding:14px 0;border-bottom:0.5px solid var(--border-light);display:block}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu.open{display:flex}
+.nav-links a{font-size:13px;font-weight:500;color:#374151;text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:var(--navy)}
 .nav-cta{background:var(--blue);color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s}
 .nav-cta:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,86,219,0.3)}
 .urg-bar{position:fixed;top:72px;left:0;right:0;z-index:199;background:var(--navy);padding:7px 0;overflow:hidden}
-.urg-inner{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;animation:marq 22s linear infinite;font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.04em}
+.urg-inner{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;animation:marq 22s linear infinite;font-size:11px;color:rgba(255,255,255,0.88);letter-spacing:0.04em}
 @keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .urg-dot{width:4px;height:4px;background:#f59e0b;border-radius:50%;display:inline-block;flex-shrink:0;animation:blink 1.2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
@@ -43,17 +49,17 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 48px;width:100%}
 .hero h1{font-size:clamp(44px,5.5vw,76px);font-weight:800;line-height:1.05;letter-spacing:-0.03em;color:#fff;max-width:640px;margin-bottom:20px}
 .hero h1 span{font-family:'Lora',serif;font-style:italic;font-weight:400;color:#93c5fd}
-.hero-sub{font-size:18px;color:rgba(255,255,255,0.62);max-width:460px;line-height:1.65;margin-bottom:36px}
+.hero-sub{font-size:18px;color:rgba(255,255,255,0.82);max-width:460px;line-height:1.65;margin-bottom:36px}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:56px}
 .btn-white{background:#fff;color:var(--navy);font-size:15px;font-weight:700;padding:15px 32px;border-radius:10px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
 .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25)}
 .btn-ghost{background:transparent;color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.3);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.5)}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.78)}
 .hero-stats{display:flex;gap:40px;flex-wrap:wrap}
 .hero-stat .num{font-size:30px;font-weight:800;color:#fff;line-height:1}
-.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.45);margin-top:4px}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.75);margin-top:4px}
 .container{max-width:1100px;margin:0 auto;padding:0 48px}
-.section-pad{padding:96px 0}
+.section-pad{padding:100px 0}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;display:block}
 .eyebrow.blue{color:var(--blue)}
 .eyebrow.white{color:#93c5fd}
@@ -67,9 +73,9 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 .logo-bar{background:var(--light2);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);padding:22px 0;overflow:hidden}
 .logo-track{display:flex;align-items:center;gap:56px;animation:marq 18s linear infinite;white-space:nowrap}
-.logo-item{font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase;flex-shrink:0;opacity:0.55}
+.logo-item{font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase;flex-shrink:0;opacity:0.8}
 /* PROBLEMS */
-.problems{background:var(--light)}
+.problems{background:var(--light);border-top:3px solid var(--blue)}
 .prob-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:64px}
 .prob-img{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg)}
 .prob-img img{width:100%;height:420px;object-fit:cover}
@@ -81,9 +87,9 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .prob-card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--navy)}
 .prob-card p{font-size:13px;color:var(--text-muted);line-height:1.55}
 /* SOLUTIONS */
-.solutions{background:var(--navy);color:#fff}
+.solutions{background:var(--navy);color:#fff;border-top:4px solid #fff}
 .sol-header{text-align:center;max-width:580px;margin:0 auto 60px}
-.sol-header .section-sub{color:rgba(255,255,255,0.5);margin:0 auto}
+.sol-header .section-sub{color:rgba(255,255,255,0.78);margin:0 auto}
 .sol-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
 .sol-card{background:rgba(255,255,255,0.03);padding:36px;transition:background .25s;position:relative;overflow:hidden}
 .sol-card:hover{background:rgba(255,255,255,0.07)}
@@ -92,9 +98,9 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .sol-tag{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#60a5fa;margin-bottom:14px;display:block}
 .sol-icon{width:42px;height:42px;border-radius:10px;background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
 .sol-card h3{font-size:17px;font-weight:700;margin-bottom:8px;color:#fff}
-.sol-card p{font-size:13px;color:rgba(255,255,255,0.48);line-height:1.55}
+.sol-card p{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.55}
 /* DELIVERABLES */
-.deliverables{background:var(--light)}
+.deliverables{background:var(--light2);border-top:3px solid var(--navy)}
 .del-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
 .del-img{border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg)}
 .del-img img{width:100%;height:500px;object-fit:cover}
@@ -119,7 +125,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .urg-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .urg-badge{background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2);color:var(--amber);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
 /* CASES */
-.cases{background:var(--light2)}
+.cases{background:var(--light);border-top:3px solid var(--blue)}
 .cases-header{text-align:center;max-width:560px;margin:0 auto 52px}
 .cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .case-card{background:#fff;border:1px solid var(--border-light);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;text-decoration:none;color:inherit;display:block}
@@ -135,34 +141,34 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .case-met{background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.15);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--green);font-weight:700}
 .case-more{font-size:12px;color:var(--blue);font-weight:600;display:flex;align-items:center;gap:3px;margin-top:10px}
 /* ABOUT */
-.about{background:var(--navy);color:#fff}
+.about{background:var(--navy);color:#fff;border-top:4px solid #fff}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
 .about-img{border-radius:20px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,0.4)}
 .about-img img{width:100%;height:520px;object-fit:cover;filter:brightness(0.88)}
 .about-vals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
 .about-val{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px}
 .about-val h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
-.about-val p{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5}
-.about-link{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:rgba(255,255,255,0.65);font-size:13px;transition:all .2s}
+.about-val p{font-size:12px;color:rgba(255,255,255,0.72);line-height:1.5}
+.about-link{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:rgba(255,255,255,0.85);font-size:13px;transition:all .2s}
 .about-link:hover{background:rgba(255,255,255,0.09);color:#fff}
 /* CONTACT */
-.contact{background:var(--dark);color:#fff}
+.contact{background:var(--dark);color:#fff;border-top:4px solid var(--blue)}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
 .contact h2{font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.1}
-.contact-sub{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:32px}
+.contact-sub{font-size:15px;color:rgba(255,255,255,0.78);line-height:1.65;margin-bottom:32px}
 .channels{display:flex;flex-direction:column;gap:12px}
-.channel{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;text-decoration:none;color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;transition:all .2s}
+.channel{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;text-decoration:none;color:rgba(255,255,255,0.88);font-size:14px;font-weight:500;transition:all .2s}
 .channel:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.14);color:#fff;transform:translateX(4px)}
 .ch-icon{width:36px;height:36px;border-radius:8px;background:rgba(26,86,219,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ch-icon svg{width:16px;height:16px;stroke:#60a5fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ch-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:1px}
+.ch-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:1px}
 .cta-block{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px;text-align:center}
 .cta-block h3{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
-.cta-block p{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:24px;line-height:1.6}
+.cta-block p{font-size:14px;color:rgba(255,255,255,0.75);margin-bottom:24px;line-height:1.6}
 footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);padding:36px 0}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
 .f-logo{display:flex;align-items:center;gap:8px}
-.f-brand{font-size:13px;font-weight:700;color:rgba(255,255,255,0.7)}
+.f-brand{font-size:13px;font-weight:700;color:rgba(255,255,255,0.88)}
 .f-tag{font-size:10px;font-weight:600;letter-spacing:0.1em;color:rgba(26,86,219,0.6);text-transform:uppercase}
 .f-copy{font-size:11px;color:rgba(255,255,255,0.25)}
 /* MODAL */
@@ -187,12 +193,16 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
 .mod-list li::before{content:'→';color:var(--blue);flex-shrink:0;font-weight:700}
 @media(max-width:900px){
   nav{padding:0 20px}.nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-cta{font-size:12px;padding:8px 14px}
   .hero-content,.container{padding:0 20px}
   .hero h1{font-size:38px}
   .prob-intro,.del-intro,.about-grid,.contact-grid,.urg-inner2{grid-template-columns:1fr}
   .prob-grid,.sol-grid,.cases-grid,.about-vals,.mod-mets{grid-template-columns:1fr}
   .del-img,.about-img,.prob-img{display:none}
   .hero-stats{gap:20px}
+  .section-pad{padding:64px 0}
+  .section-h{font-size:26px}
 }
 </style>
 </head>
@@ -229,7 +239,18 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
     <a href="contacto.html">Contacto</a>
   </div>
   <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problemas" onclick="closeMenu()">Problemas</a>
+  <a href="#soluciones" onclick="closeMenu()">Soluciones</a>
+  <a href="casos.html">Casos</a>
+  <a href="nosotros.html">Nosotros</a>
+  <a href="contacto.html">Contacto</a>
+  <a href="diagnostico.html" style="color:var(--blue);font-weight:700;margin-top:8px">Diagnóstico gratuito →</a>
+</div>
 
 <section class="hero">
   <div class="hero-bg">
@@ -286,6 +307,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   </div>
 </section>
 
+<span class="section-divider"></span>
 <section class="solutions section-pad" id="soluciones">
   <div class="container">
     <div class="sol-header reveal">
@@ -305,6 +327,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   </div>
 </section>
 
+<span class="section-divider"></span>
 <section class="deliverables section-pad" id="entregamos">
   <div class="container">
     <div class="del-intro">
@@ -345,6 +368,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   </div>
 </section>
 
+<span class="section-divider"></span>
 <section class="cases section-pad" id="casos">
   <div class="container">
     <div class="cases-header reveal">
@@ -372,6 +396,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   </div>
 </section>
 
+<span class="section-divider"></span>
 <section class="about section-pad" id="nosotros">
   <div class="container">
     <div class="about-grid">
@@ -381,8 +406,8 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
       <div class="reveal">
         <span class="eyebrow white">Nosotros</span>
         <h2 class="section-h" style="color:#fff">Especialistas en convertir datos en decisiones</h2>
-        <p class="section-sub" style="color:rgba(255,255,255,0.5);margin-bottom:14px">Predicteer Decisions nació con una convicción: las empresas latinoamericanas tienen los datos para competir al nivel de los grandes, pero no siempre tienen los sistemas para usarlos.</p>
-        <p class="section-sub" style="color:rgba(255,255,255,0.5)">Nos especializamos exclusivamente en predicción comercial — no somos una agencia genérica de IA. Cada proyecto lo entregamos en 2 semanas con un equipo dedicado.</p>
+        <p class="section-sub" style="color:rgba(255,255,255,0.78);margin-bottom:14px">Predicteer Decisions nació con una convicción: las empresas latinoamericanas tienen los datos para competir al nivel de los grandes, pero no siempre tienen los sistemas para usarlos.</p>
+        <p class="section-sub" style="color:rgba(255,255,255,0.78)">Nos especializamos exclusivamente en predicción comercial — no somos una agencia genérica de IA. Cada proyecto lo entregamos en 2 semanas con un equipo dedicado.</p>
         <div class="about-vals">
           <div class="about-val"><h4>Especialización</h4><p>Solo predicción comercial, no proyectos genéricos de IA.</p></div>
           <div class="about-val"><h4>Velocidad</h4><p>Resultados en 2 semanas, no en 6 meses.</p></div>
@@ -398,6 +423,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   </div>
 </section>
 
+<span class="section-divider"></span>
 <section class="contact section-pad" id="contacto">
   <div class="container">
     <div class="contact-grid">
@@ -533,7 +559,9 @@ document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('animate');ob
 window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>40));
 function openM(id){document.getElementById('m-'+id).classList.add('open');document.body.style.overflow='hidden'}
 function closeM(id){document.getElementById('m-'+id).classList.remove('open');document.body.style.overflow=''}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-ov.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow=''}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-ov.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow=''}})
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')};
 </script>
 </body>
 </html>
