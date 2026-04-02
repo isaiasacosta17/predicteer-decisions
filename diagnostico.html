@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Gratuito — Predicteer Decisions</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: rgba(255,255,255,0.08);
+    --purple: #7c3aed;
+    --purple-light: #a78bfa;
+    --purple-glow: rgba(124, 58, 237, 0.3);
+    --white: #f8f8ff;
+    --muted: #888899;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: var(--purple-light);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--purple-light);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 700px;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .hero-proof {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+
+  .hero-proof span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hero-proof span::before {
+    content: '✓';
+    color: var(--purple-light);
+    font-weight: 700;
+  }
+
+  .cta-btn {
+    background: var(--purple);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 36px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 0 40px rgba(124,58,237,0.4);
+  }
+
+  .cta-btn:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(124,58,237,0.6);
+  }
+
+  /* FORM CONTAINER */
+  .form-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    margin-bottom: 40px;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--purple-light));
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* STEP CARD */
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .step-card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--purple-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  /* INPUTS */
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .field input, .field select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--purple);
+  }
+
+  .field input::placeholder { color: #444; }
+
+  .field select option { background: #1a1a2e; }
+
+  .fields-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* OPTION CARDS */
+  .options-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .options-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+
+  .option-card {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .option-card:hover {
+    border-color: rgba(124,58,237,0.4);
+    background: rgba(124,58,237,0.05);
+  }
+
+  .option-card.selected {
+    border-color: var(--purple);
+    background: rgba(124,58,237,0.12);
+    color: var(--purple-light);
+  }
+
+  .option-card .opt-check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .option-card.selected .opt-check {
+    background: var(--purple);
+    border-color: var(--purple);
+  }
+
+  .option-card.selected .opt-check::after {
+    content: '✓';
+    font-size: 10px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* YES/NO TOGGLE */
+  .yesno-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .yesno-btn {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .yesno-btn:hover { border-color: rgba(124,58,237,0.4); }
+
+  .yesno-btn.yes.selected {
+    border-color: var(--green);
+    background: rgba(16,185,129,0.1);
+    color: var(--green);
+  }
+
+  .yesno-btn.no.selected {
+    border-color: var(--muted);
+    background: rgba(136,136,153,0.1);
+    color: var(--muted);
+  }
+
+  /* SCALE */
+  .scale-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .scale-btn {
+    flex: 1;
+    aspect-ratio: 1;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--muted);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scale-btn:hover { border-color: rgba(124,58,237,0.4); }
+
+  .scale-btn.selected {
+    border-color: var(--purple);
+    background: rgba(124,58,237,0.15);
+    color: var(--white);
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* NAV BUTTONS */
+  .step-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+  }
+
+  .btn-back {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-back:hover { border-color: var(--muted); color: var(--white); }
+
+  .btn-next {
+    background: var(--purple);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    max-width: 280px;
+    box-shadow: 0 0 30px rgba(124,58,237,0.35);
+  }
+
+  .btn-next:hover { background: #6d28d9; transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ERROR */
+  .error-msg {
+    font-size: 13px;
+    color: var(--red);
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* RESULT CARD */
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    display: none;
+    animation: fadeUp 0.5s ease;
+  }
+
+  .result-card.active { display: block; }
+
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .result-badge.high { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+  .result-badge.mid { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: var(--yellow); }
+  .result-badge.low { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+
+  .result-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .result-desc {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  .next-steps {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+
+  .next-steps h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .next-steps ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .next-steps li {
+    font-size: 14px;
+    color: var(--white);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .next-steps li::before {
+    content: '→';
+    color: var(--purple-light);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .cal-wrapper {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .cal-placeholder {
+    padding: 32px;
+    text-align: center;
+  }
+
+  .cal-placeholder p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .cal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 0 40px rgba(124,58,237,0.4);
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cal-btn:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(124,58,237,0.6);
+  }
+
+  /* TRUST BAR */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+  }
+
+  .trust-bar span {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .trust-bar span::before { content: '🔒'; font-size: 13px; }
+
+  /* SCROLL MARGIN */
+  body { padding-bottom: 80px; }
+
+  /* CALENDLY EMBED */
+  .calendly-inline-widget {
+    min-width: 320px;
+    height: 600px;
+  }
+
+  @media (max-width: 600px) {
+    .step-card { padding: 28px 20px; }
+    .fields-row { grid-template-columns: 1fr; }
+    .options-grid.cols-2 { grid-template-columns: 1fr; }
+    .scale-group { gap: 6px; }
+    .result-card { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Diagnóstico gratuito · 3 minutos</div>
+  <h1>Descubre si tus datos pueden <span>predecir tus ventas</span></h1>
+  <p class="hero-sub">Empresas con datos ya están usando IA para aumentar ventas y retención. Descubre si tú puedes hacerlo.</p>
+  <div class="hero-proof">
+    <span>Sin costo ni compromiso</span>
+    <span>Resultado inmediato</span>
+    <span>Reunión incluida</span>
+  </div>
+  <button class="cta-btn" onclick="document.getElementById('survey').scrollIntoView({behavior:'smooth'})">
+    Hacer el diagnóstico →
+  </button>
+</section>
+
+<!-- FORM -->
+<div class="form-wrapper" id="survey">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap" id="progressWrap">
+    <div class="progress-labels">
+      <span id="stepLabel">Paso 1 de 11</span>
+      <span id="stepPct">9%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:9%"></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: NOMBRE + EMPRESA -->
+  <div class="step-card active" id="step1">
+    <div class="step-number">Paso 1 · Información básica</div>
+    <div class="step-title">¿Quién eres?</div>
+    <div class="step-desc">Necesitamos esto para enviarte tu diagnóstico personalizado.</div>
+    <div class="fields-row">
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" id="firstName" placeholder="Nombre" />
+      </div>
+      <div class="field">
+        <label>Apellido</label>
+        <input type="text" id="lastName" placeholder="Apellido" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Empresa</label>
+      <input type="text" id="company" placeholder="Nombre de tu empresa" />
+    </div>
+    <div class="fields-row">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="tu@empresa.com" />
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="tel" id="phone" placeholder="+57 300 000 0000" />
+      </div>
+    </div>
+    <div class="error-msg" id="err1">Por favor completa todos los campos.</div>
+    <div class="step-nav">
+      <div></div>
+      <button class="btn-next" onclick="nextStep(1)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: PROBLEMA PRINCIPAL -->
+  <div class="step-card" id="step2">
+    <div class="step-number">Paso 2 · Tu situación</div>
+    <div class="step-title">¿Cuál es tu problema principal hoy?</div>
+    <div class="step-desc">Elige el que más te preocupa actualmente.</div>
+    <div class="options-grid" id="problem">
+      <div class="option-card" onclick="selectOption('problem', this, 0)">
+        <div class="opt-check"></div> No sé cuáles clientes me van a dejar
+      </div>
+      <div class="option-card" onclick="selectOption('problem', this, 1)">
+        <div class="opt-check"></div> No puedo predecir mis ventas del próximo mes
+      </div>
+      <div class="option-card" onclick="selectOption('problem', this, 2)">
+        <div class="opt-check"></div> Mi equipo comercial no sabe a quién priorizar
+      </div>
+      <div class="option-card" onclick="selectOption('problem', this, 3)">
+        <div class="opt-check"></div> No sé en qué leads invertir el presupuesto
+      </div>
+      <div class="option-card" onclick="selectOption('problem', this, 4)">
+        <div class="opt-check"></div> Tengo datos pero no sé cómo usarlos
+      </div>
+    </div>
+    <div class="error-msg" id="err2">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(2)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: CLIENTES -->
+  <div class="step-card" id="step3">
+    <div class="step-number">Paso 3 · Tu empresa</div>
+    <div class="step-title">¿Cuántos clientes tiene tu empresa?</div>
+    <div class="step-desc">Incluye clientes activos e históricos.</div>
+    <div class="options-grid cols-2" id="clients">
+      <div class="option-card" onclick="selectOption('clients', this, 0)">
+        <div class="opt-check"></div> Menos de 100
+      </div>
+      <div class="option-card" onclick="selectOption('clients', this, 1)">
+        <div class="opt-check"></div> 100 – 500
+      </div>
+      <div class="option-card" onclick="selectOption('clients', this, 2)">
+        <div class="opt-check"></div> 500 – 2,000
+      </div>
+      <div class="option-card" onclick="selectOption('clients', this, 3)">
+        <div class="opt-check"></div> Más de 2,000
+      </div>
+    </div>
+    <div class="error-msg" id="err3">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(3)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(3)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: MESES DE DATOS -->
+  <div class="step-card" id="step4">
+    <div class="step-number">Paso 4 · Tus datos</div>
+    <div class="step-title">¿Cuántos meses/años de datos tienes?</div>
+    <div class="step-desc">El historial de datos es clave para construir modelos predictivos.</div>
+    <div class="options-grid cols-2" id="dataAge">
+      <div class="option-card" onclick="selectOption('dataAge', this, 0)">
+        <div class="opt-check"></div> Menos de 6 meses
+      </div>
+      <div class="option-card" onclick="selectOption('dataAge', this, 1)">
+        <div class="opt-check"></div> 6 – 12 meses
+      </div>
+      <div class="option-card" onclick="selectOption('dataAge', this, 2)">
+        <div class="opt-check"></div> 1 – 3 años
+      </div>
+      <div class="option-card" onclick="selectOption('dataAge', this, 3)">
+        <div class="opt-check"></div> Más de 3 años
+      </div>
+    </div>
+    <div class="error-msg" id="err4">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(4)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(4)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: ALMACENAMIENTO -->
+  <div class="step-card" id="step5">
+    <div class="step-number">Paso 5 · Tus datos</div>
+    <div class="step-title">¿Dónde tienes almacenados tus datos?</div>
+    <div class="options-grid" id="dataStorage">
+      <div class="option-card" onclick="selectOption('dataStorage', this, 2)">
+        <div class="opt-check"></div> CRM (Salesforce, HubSpot, Pipedrive, etc.)
+      </div>
+      <div class="option-card" onclick="selectOption('dataStorage', this, 2)">
+        <div class="opt-check"></div> ERP (SAP, Oracle, Odoo, etc.)
+      </div>
+      <div class="option-card" onclick="selectOption('dataStorage', this, 1)">
+        <div class="opt-check"></div> Excel / Google Sheets
+      </div>
+      <div class="option-card" onclick="selectOption('dataStorage', this, 1)">
+        <div class="opt-check"></div> Base de datos propia (SQL, MongoDB, etc.)
+      </div>
+      <div class="option-card" onclick="selectOption('dataStorage', this, 0)">
+        <div class="opt-check"></div> No están bien organizados / dispersos
+      </div>
+    </div>
+    <div class="error-msg" id="err5">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(5)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(5)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: HISTORIAL -->
+  <div class="step-card" id="step6">
+    <div class="step-number">Paso 6 · Calidad de datos</div>
+    <div class="step-title">¿Registras historial de clientes o ventas?</div>
+    <div class="options-grid" id="dataHistory">
+      <div class="option-card" onclick="selectOption('dataHistory', this, 2)">
+        <div class="opt-check"></div> Sí, tengo historial detallado de transacciones y clientes
+      </div>
+      <div class="option-card" onclick="selectOption('dataHistory', this, 1)">
+        <div class="opt-check"></div> Sí, pero está incompleto o desordenado
+      </div>
+      <div class="option-card" onclick="selectOption('dataHistory', this, 1)">
+        <div class="opt-check"></div> Solo registro ventas totales, no por cliente
+      </div>
+      <div class="option-card" onclick="selectOption('dataHistory', this, 0)">
+        <div class="opt-check"></div> No tengo historial registrado
+      </div>
+    </div>
+    <div class="error-msg" id="err6">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(6)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(6)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7: VENTAS RECURRENTES -->
+  <div class="step-card" id="step7">
+    <div class="step-number">Paso 7 · Tu modelo de negocio</div>
+    <div class="step-title">¿Tu negocio tiene ventas recurrentes?</div>
+    <div class="step-desc">Por ejemplo: suscripciones, compras repetidas, contratos renovables.</div>
+    <div class="yesno-group">
+      <button class="yesno-btn yes" onclick="selectYesNo('recurring', true, this)">✓ Sí</button>
+      <button class="yesno-btn no" onclick="selectYesNo('recurring', false, this)">✗ No</button>
+    </div>
+    <div class="error-msg" id="err7">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(7)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(7)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: EQUIPO COMERCIAL -->
+  <div class="step-card" id="step8">
+    <div class="step-number">Paso 8 · Tu equipo</div>
+    <div class="step-title">¿Tienes equipo comercial o marketing activo?</div>
+    <div class="step-desc">Un equipo que pueda actuar sobre las predicciones acelera el impacto.</div>
+    <div class="yesno-group">
+      <button class="yesno-btn yes" onclick="selectYesNo('team', true, this)">✓ Sí</button>
+      <button class="yesno-btn no" onclick="selectYesNo('team', false, this)">✗ No</button>
+    </div>
+    <div class="error-msg" id="err8">Selecciona una opción para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(8)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(8)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 9: IMPORTANCIA -->
+  <div class="step-card" id="step9">
+    <div class="step-number">Paso 9 · Prioridad</div>
+    <div class="step-title">¿Qué tan importante es resolver este problema para ti?</div>
+    <div class="step-desc">1 = Poco urgente &nbsp;·&nbsp; 5 = Prioridad máxima</div>
+    <div class="scale-group" id="importance">
+      <button class="scale-btn" onclick="selectScale('importance', 1, this)">1</button>
+      <button class="scale-btn" onclick="selectScale('importance', 2, this)">2</button>
+      <button class="scale-btn" onclick="selectScale('importance', 3, this)">3</button>
+      <button class="scale-btn" onclick="selectScale('importance', 4, this)">4</button>
+      <button class="scale-btn" onclick="selectScale('importance', 5, this)">5</button>
+    </div>
+    <div class="scale-labels">
+      <span>Poco urgente</span>
+      <span>Prioridad máxima</span>
+    </div>
+    <div class="error-msg" id="err9">Selecciona un valor para continuar.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="prevStep(9)">← Atrás</button>
+      <button class="btn-next" onclick="nextStep(9)">Ver mi diagnóstico →</button>
+    </div>
+  </div>
+
+  <!-- RESULT: HIGH -->
+  <div class="result-card" id="resultHigh">
+    <div class="result-badge high">🟢 Alta aplicabilidad</div>
+    <div class="result-title">Tu empresa tiene alto potencial predictivo</div>
+    <div class="result-desc">Con los datos que tienes, es posible construir sistemas para predecir comportamiento de clientes, ventas o conversión desde el primer mes.</div>
+    <div class="next-steps">
+      <h4>Próximo paso — Reunión de 30 min</h4>
+      <ul>
+        <li>Verificar la calidad y estructura de tus datos</li>
+        <li>Definir qué problema atacar primero para mayor impacto</li>
+        <li>Estimar el retorno esperado en tu negocio</li>
+      </ul>
+    </div>
+    <div class="cal-wrapper">
+      <div class="cal-placeholder">
+        <p>Agenda ahora tu sesión de diagnóstico gratuita con nuestro equipo. Elige el horario que mejor te convenga.</p>
+        <button class="cal-btn" onclick="openCalendly()">
+          📅 AGENDAR REUNIÓN AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT: MID -->
+  <div class="result-card" id="resultMid">
+    <div class="result-badge mid">🟡 Media aplicabilidad</div>
+    <div class="result-title">Tu empresa tiene potencial, con algunos ajustes</div>
+    <div class="result-desc">Tus datos tienen base para comenzar, pero puede requerir ajustes en calidad o procesos antes de construir modelos con alta precisión.</div>
+    <div class="next-steps">
+      <h4>Próximo paso — Reunión de 30 min</h4>
+      <ul>
+        <li>Identificar los gaps en la calidad de tus datos</li>
+        <li>Definir un plan de preparación de datos</li>
+        <li>Estimar en cuánto tiempo podrías tener predicciones confiables</li>
+      </ul>
+    </div>
+    <div class="cal-wrapper">
+      <div class="cal-placeholder">
+        <p>Agenda una sesión gratuita para trazar el camino más corto hacia tus primeras predicciones.</p>
+        <button class="cal-btn" onclick="openCalendly()">
+          📅 AGENDAR REUNIÓN AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT: LOW -->
+  <div class="result-card" id="resultLow">
+    <div class="result-badge low">🔴 Baja aplicabilidad (por ahora)</div>
+    <div class="result-title">Aún no es el momento ideal, pero podemos prepararte</div>
+    <div class="result-desc">Actualmente tus datos no son suficientes para un modelo predictivo sólido. Pero con la estrategia correcta, puedes llegar ahí en meses.</div>
+    <div class="next-steps">
+      <h4>Próximo paso — Orientación gratuita 30 min</h4>
+      <ul>
+        <li>Entender qué datos necesitas empezar a recopilar hoy</li>
+        <li>Diseñar un plan para llegar al punto de aplicabilidad</li>
+        <li>Evitar errores que retrasen tu crecimiento</li>
+      </ul>
+    </div>
+    <div class="cal-wrapper">
+      <div class="cal-placeholder">
+        <p>No tirar los datos que ya tienes. Habla con nuestro equipo para construir el camino correcto desde ahora.</p>
+        <button class="cal-btn" onclick="openCalendly()">
+          📅 AGENDAR REUNIÓN AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /form-wrapper -->
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <span>Tus datos están protegidos</span>
+  <span style="font-size:12px; color:var(--muted);">Sin spam · Sin compromiso · 100% confidencial</span>
+</div>
+
+<script>
+  const TOTAL_STEPS = 9;
+  let answers = {
+    problem: null, clients: null, dataAge: null,
+    dataStorage: null, dataHistory: null,
+    recurring: null, team: null, importance: null,
+    // scores from options
+    storageScore: 0, historyScore: 0, dataAgeScore: 0, clientsScore: 0
+  };
+
+  // Scores for options (index → score)
+  const optionScores = {
+    problem: [2,2,2,2,1],
+    clients: [0,1,2,2],
+    dataAge: [0,1,2,2],
+    dataStorage: null, // handled inline
+    dataHistory: null  // handled inline
+  };
+
+  let scores = { storage: 0, history: 0, dataAge: 0, clients: 0, recurring: 0, team: 0, importance: 0 };
+
+  function updateProgress(step) {
+    const pct = Math.round((step / TOTAL_STEPS) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('stepLabel').textContent = `Paso ${step} de ${TOTAL_STEPS}`;
+    document.getElementById('stepPct').textContent = pct + '%';
+  }
+
+  function selectOption(groupId, el, scoreVal) {
+    document.querySelectorAll(`#${groupId} .option-card`).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[groupId] = el.textContent.trim();
+    if(groupId === 'dataStorage') scores.storage = scoreVal;
+    if(groupId === 'dataHistory') scores.history = scoreVal;
+    if(groupId === 'clients') scores.clients = scoreVal;
+    if(groupId === 'dataAge') scores.dataAge = scoreVal;
+    document.getElementById('err' + getCurrentStep()).style.display = 'none';
+  }
+
+  function selectYesNo(key, val, el) {
+    const parent = el.parentElement;
+    parent.querySelectorAll('.yesno-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[key] = val;
+    scores[key] = val ? 1 : 0;
+    const step = key === 'recurring' ? 7 : 8;
+    document.getElementById('err' + step).style.display = 'none';
+  }
+
+  function selectScale(key, val, el) {
+    document.querySelectorAll(`#${key} .scale-btn`).forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[key] = val;
+    scores.importance = val;
+    document.getElementById('err9').style.display = 'none';
+  }
+
+  let currentStep = 1;
+
+  function getCurrentStep() { return currentStep; }
+
+  function nextStep(step) {
+    // Validate
+    if(!validateStep(step)) return;
+    hideStep(step);
+    currentStep = step + 1;
+    if(currentStep <= TOTAL_STEPS) {
+      showStep(currentStep);
+      updateProgress(currentStep);
+    } else {
+      showResult();
+    }
+    window.scrollTo({ top: document.getElementById('survey').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  function prevStep(step) {
+    hideStep(step);
+    currentStep = step - 1;
+    showStep(currentStep);
+    updateProgress(currentStep);
+    window.scrollTo({ top: document.getElementById('survey').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  function hideStep(step) {
+    document.getElementById('step' + step).classList.remove('active');
+  }
+
+  function showStep(step) {
+    document.getElementById('step' + step).classList.add('active');
+  }
+
+  function validateStep(step) {
+    if(step === 1) {
+      const fields = ['firstName','lastName','company','email','phone'];
+      const valid = fields.every(f => document.getElementById(f).value.trim() !== '');
+      if(!valid) { document.getElementById('err1').style.display = 'block'; return false; }
+      // basic email check
+      const email = document.getElementById('email').value;
+      if(!email.includes('@')) { document.getElementById('err1').textContent = 'Ingresa un email válido.'; document.getElementById('err1').style.display = 'block'; return false; }
+      document.getElementById('err1').style.display = 'none';
+      return true;
+    }
+    const selectionMap = {
+      2: 'problem', 3: 'clients', 4: 'dataAge',
+      5: 'dataStorage', 6: 'dataHistory'
+    };
+    if(selectionMap[step]) {
+      const selected = document.querySelector(`#${selectionMap[step]} .option-card.selected`);
+      if(!selected) { document.getElementById('err'+step).style.display = 'block'; return false; }
+    }
+    if(step === 7 && answers.recurring === null) { document.getElementById('err7').style.display = 'block'; return false; }
+    if(step === 8 && answers.team === null) { document.getElementById('err8').style.display = 'block'; return false; }
+    if(step === 9 && answers.importance === null) { document.getElementById('err9').style.display = 'block'; return false; }
+    return true;
+  }
+
+  function computeScore() {
+    let total = 0;
+    // Data quality: age (0-2) + storage (0-2) + history (0-2) = 0-6
+    total += scores.dataAge + scores.storage + scores.history;
+    // Company size: clients (0-2)
+    total += scores.clients;
+    // Business model: recurring (0-1) + team (0-1)
+    total += scores.recurring + scores.team;
+    // Importance (1-5 mapped to 0-2): >=4 = 2, 3 = 1, <3 = 0
+    total += scores.importance >= 4 ? 2 : scores.importance === 3 ? 1 : 0;
+    // Max = 12
+    return total;
+  }
+
+  function showResult() {
+    document.getElementById('progressWrap').style.display = 'none';
+    const score = computeScore();
+
+    let level;
+    if(score >= 8) level = 'High';
+    else if(score >= 5) level = 'Mid';
+    else level = 'Low';
+
+    document.getElementById('result' + level).classList.add('active');
+    window.scrollTo({ top: document.getElementById('survey').offsetTop - 20, behavior: 'smooth' });
+
+    // Save to localStorage for potential backend sync
+    const formData = {
+      name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+      company: document.getElementById('company').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      answers,
+      score,
+      level,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('predicteer_lead', JSON.stringify(formData));
+    console.log('Lead data:', formData);
+  }
+
+  const CALENDLY_URL = 'https://calendly.com/isaiasacosta173/diagnostico-predictivo-gratuito';
+
+  function openCalendly() {
+    // Popup if widget loaded
+    if (typeof Calendly !== 'undefined' && Calendly.initPopupWidget) {
+      Calendly.initPopupWidget({ url: CALENDLY_URL });
+      return;
+    }
+    // Load widget dynamically then open popup
+    if (!document.querySelector('script[src*="calendly.com/assets"]')) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://assets.calendly.com/assets/external/widget.css';
+      document.head.appendChild(css);
+      const s = document.createElement('script');
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.onload = function() {
+        setTimeout(function() {
+          if (typeof Calendly !== 'undefined') {
+            Calendly.initPopupWidget({ url: CALENDLY_URL });
+          } else {
+            window.open(CALENDLY_URL, '_blank');
+          }
+        }, 400);
+      };
+      document.head.appendChild(s);
+    } else {
+      setTimeout(function() {
+        if (typeof Calendly !== 'undefined') {
+          Calendly.initPopupWidget({ url: CALENDLY_URL });
+        } else {
+          window.open(CALENDLY_URL, '_blank');
+        }
+      }, 600);
+    }
+  }
+</script>
+
+</body>
+</html>

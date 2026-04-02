@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicteer Decisions — Toma decisiones con datos</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dark:#0d1117;--dark2:#111920;--light:#ffffff;--light2:#f7f8fa;--light3:#eef0f4;
+  --blue:#1a56db;--blue2:#1e40af;--blue-light:#dbeafe;--navy:#0f172a;
+  --text-dark:#0f172a;--text-mid:#374151;--text-muted:#6b7280;--text-light:#f9fafb;
+  --green:#059669;--amber:#d97706;
+  --border-light:rgba(0,0,0,0.08);--border-dark:rgba(255,255,255,0.1);
+  --shadow:0 4px 24px rgba(0,0,0,0.08);--shadow-lg:0 16px 60px rgba(0,0,0,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;color:var(--text-dark)}
+img{display:block;max-width:100%}
+.cursor{position:fixed;width:8px;height:8px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1.5px solid rgba(26,86,219,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-light);transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-logo-text .brand{font-size:15px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);display:block;line-height:1.1}
+.nav-logo-text .tag{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--text-mid);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--navy)}
+.nav-cta{background:var(--blue);color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,86,219,0.3)}
+.urg-bar{position:fixed;top:72px;left:0;right:0;z-index:199;background:var(--navy);padding:7px 0;overflow:hidden}
+.urg-inner{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;animation:marq 22s linear infinite;font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:0.04em}
+@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.urg-dot{width:4px;height:4px;background:#f59e0b;border-radius:50%;display:inline-block;flex-shrink:0;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding-top:112px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,15,28,0.9) 45%,rgba(10,15,28,0.3) 100%)}
+.hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 48px;width:100%}
+.hero h1{font-size:clamp(44px,5.5vw,76px);font-weight:800;line-height:1.05;letter-spacing:-0.03em;color:#fff;max-width:640px;margin-bottom:20px}
+.hero h1 span{font-family:'Lora',serif;font-style:italic;font-weight:400;color:#93c5fd}
+.hero-sub{font-size:18px;color:rgba(255,255,255,0.62);max-width:460px;line-height:1.65;margin-bottom:36px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:56px}
+.btn-white{background:#fff;color:var(--navy);font-size:15px;font-weight:700;padding:15px 32px;border-radius:10px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+.btn-ghost{background:transparent;color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.3);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.5)}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap}
+.hero-stat .num{font-size:30px;font-weight:800;color:#fff;line-height:1}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.45);margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 48px}
+.section-pad{padding:96px 0}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;display:block}
+.eyebrow.blue{color:var(--blue)}
+.eyebrow.white{color:#93c5fd}
+.section-h{font-size:clamp(28px,3.5vw,44px);font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:14px}
+.section-sub{font-size:16px;line-height:1.65;color:var(--text-muted);max-width:540px}
+.btn-blue{background:var(--blue);color:#fff;font-size:14px;font-weight:700;padding:13px 28px;border-radius:9px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-blue:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,86,219,0.3)}
+.btn-dark{background:var(--navy);color:#fff;font-size:14px;font-weight:700;padding:13px 28px;border-radius:9px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-dark:hover{background:#1e293b;transform:translateY(-1px)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.logo-bar{background:var(--light2);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);padding:22px 0;overflow:hidden}
+.logo-track{display:flex;align-items:center;gap:56px;animation:marq 18s linear infinite;white-space:nowrap}
+.logo-item{font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase;flex-shrink:0;opacity:0.55}
+/* PROBLEMS */
+.problems{background:var(--light)}
+.prob-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:64px}
+.prob-img{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg)}
+.prob-img img{width:100%;height:420px;object-fit:cover}
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.prob-card{background:var(--light2);border:1px solid var(--border-light);border-radius:14px;padding:28px;transition:all .25s}
+.prob-card:hover{background:#fff;box-shadow:var(--shadow);transform:translateY(-2px)}
+.prob-n{font-size:11px;font-weight:700;letter-spacing:0.07em;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.prob-n::before{content:'';width:20px;height:1px;background:var(--blue)}
+.prob-card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--navy)}
+.prob-card p{font-size:13px;color:var(--text-muted);line-height:1.55}
+/* SOLUTIONS */
+.solutions{background:var(--navy);color:#fff}
+.sol-header{text-align:center;max-width:580px;margin:0 auto 60px}
+.sol-header .section-sub{color:rgba(255,255,255,0.5);margin:0 auto}
+.sol-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+.sol-card{background:rgba(255,255,255,0.03);padding:36px;transition:background .25s;position:relative;overflow:hidden}
+.sol-card:hover{background:rgba(255,255,255,0.07)}
+.sol-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--blue);transition:height .35s}
+.sol-card:hover::before{height:100%}
+.sol-tag{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#60a5fa;margin-bottom:14px;display:block}
+.sol-icon{width:42px;height:42px;border-radius:10px;background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
+.sol-card h3{font-size:17px;font-weight:700;margin-bottom:8px;color:#fff}
+.sol-card p{font-size:13px;color:rgba(255,255,255,0.48);line-height:1.55}
+/* DELIVERABLES */
+.deliverables{background:var(--light)}
+.del-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.del-img{border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg)}
+.del-img img{width:100%;height:500px;object-fit:cover}
+.del-steps{display:flex;flex-direction:column;gap:0;margin-top:32px}
+.del-step{display:flex;gap:20px;padding-bottom:28px;position:relative}
+.del-step:last-child{padding-bottom:0}
+.del-left{flex-shrink:0;display:flex;flex-direction:column;align-items:center}
+.del-num{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:2;transition:all .3s}
+.del-step:hover .del-num{background:var(--blue)}
+.del-line{width:2px;flex:1;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.02));min-height:16px;margin-top:6px}
+.del-step:last-child .del-line{display:none}
+.del-c{padding-top:6px}
+.del-label{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.del-c h4{font-size:16px;font-weight:700;margin-bottom:4px;color:var(--navy)}
+.del-c p{font-size:13px;color:var(--text-muted);line-height:1.55}
+.del-badge{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--blue2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-top:20px}
+/* URGENCY */
+.urgency-sec{background:var(--light);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+.urg-inner2{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.urg-inner2 h2{font-size:clamp(22px,3vw,32px);font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;color:var(--navy)}
+.urg-inner2 p{font-size:15px;color:var(--text-muted)}
+.urg-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.urg-badge{background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2);color:var(--amber);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
+/* CASES */
+.cases{background:var(--light2)}
+.cases-header{text-align:center;max-width:560px;margin:0 auto 52px}
+.cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.case-card{background:#fff;border:1px solid var(--border-light);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;text-decoration:none;color:inherit;display:block}
+.case-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px);border-color:rgba(26,86,219,0.15)}
+.case-img-w{height:200px;overflow:hidden}
+.case-img-w img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.case-card:hover .case-img-w img{transform:scale(1.04)}
+.case-body{padding:22px}
+.case-co{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--blue);margin-bottom:7px}
+.case-body h3{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--navy);line-height:1.3}
+.case-body p{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:12px}
+.case-mets{display:flex;gap:6px;flex-wrap:wrap}
+.case-met{background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.15);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--green);font-weight:700}
+.case-more{font-size:12px;color:var(--blue);font-weight:600;display:flex;align-items:center;gap:3px;margin-top:10px}
+/* ABOUT */
+.about{background:var(--navy);color:#fff}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-img{border-radius:20px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,0.4)}
+.about-img img{width:100%;height:520px;object-fit:cover;filter:brightness(0.88)}
+.about-vals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.about-val{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px}
+.about-val h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
+.about-val p{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5}
+.about-link{display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;text-decoration:none;color:rgba(255,255,255,0.65);font-size:13px;transition:all .2s}
+.about-link:hover{background:rgba(255,255,255,0.09);color:#fff}
+/* CONTACT */
+.contact{background:var(--dark);color:#fff}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.contact h2{font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-0.02em;color:#fff;margin-bottom:12px;line-height:1.1}
+.contact-sub{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:32px}
+.channels{display:flex;flex-direction:column;gap:12px}
+.channel{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;text-decoration:none;color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;transition:all .2s}
+.channel:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.14);color:#fff;transform:translateX(4px)}
+.ch-icon{width:36px;height:36px;border-radius:8px;background:rgba(26,86,219,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ch-icon svg{width:16px;height:16px;stroke:#60a5fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ch-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:1px}
+.cta-block{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px;text-align:center}
+.cta-block h3{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
+.cta-block p{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:24px;line-height:1.6}
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);padding:36px 0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.f-logo{display:flex;align-items:center;gap:8px}
+.f-brand{font-size:13px;font-weight:700;color:rgba(255,255,255,0.7)}
+.f-tag{font-size:10px;font-weight:600;letter-spacing:0.1em;color:rgba(26,86,219,0.6);text-transform:uppercase}
+.f-copy{font-size:11px;color:rgba(255,255,255,0.25)}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(5,10,20,0.82);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.modal-ov.open{display:flex}
+.modal{background:#fff;border-radius:20px;max-width:660px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:modIn .28s ease}
+@keyframes modIn{from{opacity:0;transform:scale(0.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mod-img{height:220px;overflow:hidden;border-radius:20px 20px 0 0}
+.mod-img img{width:100%;height:100%;object-fit:cover}
+.mod-body{padding:36px}
+.mod-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:none;border-radius:7px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--text-mid);transition:all .2s}
+.mod-close:hover{background:#fff}
+.mod-tag{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;display:block}
+.mod-body h2{font-size:24px;font-weight:800;margin-bottom:10px;color:var(--navy);line-height:1.2}
+.mod-lead{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:22px}
+.mod-mets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.mod-met{background:var(--light2);border-radius:10px;padding:14px;text-align:center}
+.mod-met .v{font-size:24px;font-weight:800;color:var(--green);display:block;line-height:1}
+.mod-met .l{font-size:10px;color:var(--text-muted);margin-top:3px}
+.mod-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:22px}
+.mod-list li{font-size:13px;color:var(--text-mid);display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.mod-list li::before{content:'→';color:var(--blue);flex-shrink:0;font-weight:700}
+@media(max-width:900px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .hero-content,.container{padding:0 20px}
+  .hero h1{font-size:38px}
+  .prob-intro,.del-intro,.about-grid,.contact-grid,.urg-inner2{grid-template-columns:1fr}
+  .prob-grid,.sol-grid,.cases-grid,.about-vals,.mod-mets{grid-template-columns:1fr}
+  .del-img,.about-img,.prob-img{display:none}
+  .hero-stats{gap:20px}
+}
+</style>
+</head>
+<body>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<div class="urg-bar">
+  <div class="urg-inner">
+    <span class="urg-dot"></span>&nbsp;Solo 5 cupos disponibles este mes — Sprint de 2 semanas&nbsp;&nbsp;·&nbsp;&nbsp;
+    <span class="urg-dot"></span>&nbsp;Empresas con datos ya están prediciendo ventas y retención con IA&nbsp;&nbsp;·&nbsp;&nbsp;
+    <span class="urg-dot"></span>&nbsp;Solo 5 cupos disponibles este mes — Sprint de 2 semanas&nbsp;&nbsp;·&nbsp;&nbsp;
+    <span class="urg-dot"></span>&nbsp;Empresas con datos ya están prediciendo ventas y retención con IA&nbsp;&nbsp;·&nbsp;&nbsp;
+  </div>
+</div>
+
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L22 12L12 22L2 12L12 2Z" stroke="white" stroke-width="1.5"/>
+        <path d="M12 6L18 12L12 18L6 12L12 6Z" stroke="#3b82f6" stroke-width="1.5"/>
+        <path d="M12 9V15" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M10 11L12 9L14 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">
+      <span class="brand">PREDICTEER</span>
+      <span class="tag">Predict · Steer · Execute</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#problemas">Problemas</a>
+    <a href="#soluciones">Soluciones</a>
+    <a href="casos.html">Casos</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+  <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80" alt="Data analytics">
+  </div>
+  <div class="hero-content">
+    <h1>Toma decisiones <span>con datos,</span><br>no con intuición</h1>
+    <p class="hero-sub">En 2 semanas convertimos los datos de tu empresa en un sistema que predice ventas, clientes o demanda.</p>
+    <div class="hero-actions">
+      <a href="diagnostico.html" class="btn-white">Hacer diagnóstico gratuito →</a>
+      <a href="casos.html" class="btn-ghost">Ver casos de uso</a>
+    </div>
+    <div class="hero-stats reveal">
+      <div class="hero-stat"><div class="num">2 semanas</div><div class="lbl">para el primer resultado</div></div>
+      <div class="hero-stat"><div class="num">87%</div><div class="lbl">precisión promedio</div></div>
+      <div class="hero-stat"><div class="num">3x</div><div class="lbl">retorno típico</div></div>
+      <div class="hero-stat"><div class="num">5</div><div class="lbl">cupos este mes</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="logo-bar">
+  <div class="logo-track">
+    <span class="logo-item">Empresas B2B</span><span class="logo-item">· Distribución</span>
+    <span class="logo-item">· SaaS</span><span class="logo-item">· Retail</span>
+    <span class="logo-item">· Fintech</span><span class="logo-item">· Manufactura</span>
+    <span class="logo-item">· E-commerce</span><span class="logo-item">· Servicios</span>
+    <span class="logo-item">· Empresas B2B</span><span class="logo-item">· Distribución</span>
+    <span class="logo-item">· SaaS</span><span class="logo-item">· Retail</span>
+    <span class="logo-item">· Fintech</span><span class="logo-item">· Manufactura</span>
+    <span class="logo-item">· E-commerce</span><span class="logo-item">· Servicios</span>
+  </div>
+</div>
+
+<section class="problems section-pad" id="problemas">
+  <div class="container">
+    <div class="prob-intro">
+      <div class="reveal">
+        <span class="eyebrow blue">El problema</span>
+        <h2 class="section-h" style="color:var(--navy)">¿Sabes qué clientes perderás mañana?</h2>
+        <p class="section-sub">El 80% de las empresas tiene datos para predecir ventas y abandono — y no lo saben. Tú podrías ser una de ellas.</p>
+        <div style="margin-top:28px"><a href="diagnostico.html" class="btn-blue">Descubrir si tengo este problema →</a></div>
+      </div>
+      <div class="prob-img reveal">
+        <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80" alt="Business analytics">
+      </div>
+    </div>
+    <div class="prob-grid reveal">
+      <div class="prob-card"><div class="prob-n">01</div><h4>No sabes si tus clientes volverán</h4><p>Las empresas pierden entre 10–30% de clientes al año sin detectar quién está en riesgo antes de que se vayan.</p></div>
+      <div class="prob-card"><div class="prob-n">02</div><h4>No puedes predecir cuánto venderás</h4><p>Sin predicciones confiables es difícil planificar inventario, marketing o producción con anticipación real.</p></div>
+      <div class="prob-card"><div class="prob-n">03</div><h4>Tu equipo no sabe a quién priorizar</h4><p>Inviertes en leads que no convierten mientras los de alta probabilidad se enfrían sin atención.</p></div>
+      <div class="prob-card"><div class="prob-n">04</div><h4>Tienes datos pero no los aprovechas</h4><p>La información existe en tu CRM o ERP, pero nadie la está usando para tomar decisiones más inteligentes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="solutions section-pad" id="soluciones">
+  <div class="container">
+    <div class="sol-header reveal">
+      <span class="eyebrow white">Soluciones predictivas</span>
+      <h2 class="section-h" style="color:#fff">Para mejores decisiones<br>comerciales</h2>
+      <p class="section-sub">Analizamos tus datos para construir sistemas de IA que predicen el comportamiento de clientes y ventas.</p>
+    </div>
+    <div class="sol-grid reveal">
+      <div class="sol-card"><span class="sol-tag">Solución 1</span><h3>Predicción de abandono de clientes</h3><p>Identificamos qué clientes tienen mayor probabilidad de dejar de comprar para que tu equipo actúe antes de perderlos.</p></div>
+      <div class="sol-card"><span class="sol-tag">Solución 2</span><h3>Predicción de ventas y demanda</h3><p>Estimamos cuánto venderá tu empresa en los próximos meses para mejorar la planeación de inventario y producción.</p></div>
+      <div class="sol-card"><span class="sol-tag">Solución 3</span><h3>Probabilidad de compra de clientes</h3><p>Calculamos qué clientes o leads tienen mayor probabilidad de comprar para que tu equipo priorice las mejores oportunidades.</p></div>
+      <div class="sol-card"><span class="sol-tag">Solución 4</span><h3>Segmentación inteligente de clientes</h3><p>Clasificamos clientes según su valor y comportamiento para optimizar campañas de marketing y decisiones comerciales.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:52px" class="reveal">
+      <a href="diagnostico.html" class="btn-white">Descubrir cuál aplica a mi empresa →</a>
+    </div>
+  </div>
+</section>
+
+<section class="deliverables section-pad" id="entregamos">
+  <div class="container">
+    <div class="del-intro">
+      <div class="del-img reveal">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Working with data">
+      </div>
+      <div class="reveal">
+        <span class="eyebrow blue">¿Qué entregamos?</span>
+        <h2 class="section-h" style="color:var(--navy)">No solo construimos<br>el modelo</h2>
+        <p class="section-sub">Entregamos un sistema listo para usar por tu equipo.</p>
+        <div class="del-badge">⚡ En 2 semanas, no meses</div>
+        <div class="del-steps">
+          <div class="del-step"><div class="del-left"><div class="del-num">1</div><div class="del-line"></div></div><div class="del-c"><div class="del-label">Semana 1</div><h4>Modelo predictivo entrenado</h4><p>IA entrenada con los datos históricos de tu empresa, sin configuraciones complicadas.</p></div></div>
+          <div class="del-step"><div class="del-left"><div class="del-num">2</div><div class="del-line"></div></div><div class="del-c"><div class="del-label">Semana 1–2</div><h4>Aplicación simple para tu equipo</h4><p>Interfaz donde tu equipo ingresa datos y obtiene predicciones automáticamente.</p></div></div>
+          <div class="del-step"><div class="del-left"><div class="del-num">3</div><div class="del-line"></div></div><div class="del-c"><div class="del-label">Semana 2</div><h4>Interpretación del modelo</h4><p>Análisis de las variables que más influyen en el comportamiento de clientes o ventas.</p></div></div>
+          <div class="del-step"><div class="del-left"><div class="del-num">4</div></div><div class="del-c"><div class="del-label">Entrega final</div><h4>Recomendaciones estratégicas</h4><p>Guía clara de acciones comerciales según las predicciones generadas por el sistema.</p></div></div>
+        </div>
+        <div style="margin-top:32px"><a href="diagnostico.html" class="btn-blue">Empezar mi proyecto →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="urgency-sec" style="padding:52px 0">
+  <div class="container">
+    <div class="urg-inner2 reveal">
+      <div>
+        <h2>Solo 5 cupos disponibles este mes</h2>
+        <p>Cada proyecto requiere atención dedicada. Por eso limitamos los nuevos clientes por sprint.</p>
+        <div class="urg-badges">
+          <span class="urg-badge">2 semanas</span>
+          <span class="urg-badge">Cupos limitados</span>
+          <span class="urg-badge">✓ Sin contrato largo</span>
+        </div>
+      </div>
+      <a href="diagnostico.html" class="btn-dark" style="white-space:nowrap;font-size:15px;padding:16px 32px">Verificar disponibilidad →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cases section-pad" id="casos">
+  <div class="container">
+    <div class="cases-header reveal">
+      <span class="eyebrow blue">Casos de aplicación</span>
+      <h2 class="section-h" style="color:var(--navy)">Resultados reales con tus datos</h2>
+      <p class="section-sub" style="margin:0 auto">Haz clic en cada caso para ver el detalle completo.</p>
+    </div>
+    <div class="cases-grid reveal">
+      <a class="case-card" href="casos.html">
+        <div class="case-img-w"><img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=75" alt="Warehouse"></div>
+        <div class="case-body"><div class="case-co">Predicción de abandono</div><h3>Reduce la pérdida de clientes antes de que ocurra</h3><p>Identifica clientes en riesgo de abandono y actúa antes de perderlos.</p><div class="case-mets"><div class="case-met">10–25% menos churn</div></div><div class="case-more">Ver caso completo →</div></div>
+      </a>
+      <a class="case-card" href="casos.html">
+        <div class="case-img-w"><img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&q=75" alt="Fintech"></div>
+        <div class="case-body"><div class="case-co">Predicción de ventas</div><h3>Predice tus ventas con mayor precisión</h3><p>Planea inventario, marketing y producción con anticipación real.</p><div class="case-mets"><div class="case-met">20–30% menos quiebres</div></div><div class="case-more">Ver caso completo →</div></div>
+      </a>
+      <a class="case-card" href="casos.html">
+        <div class="case-img-w"><img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=75" alt="Sales"></div>
+        <div class="case-body"><div class="case-co">Eficiencia comercial</div><h3>Mejora la eficiencia del equipo comercial</h3><p>Prioriza los clientes con mayor probabilidad de compra.</p><div class="case-mets"><div class="case-met">15–40% más conversión</div></div><div class="case-more">Ver caso completo →</div></div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:44px" class="reveal">
+      <a href="diagnostico.html" class="btn-blue">Descubrir mi caso de uso →</a>
+    </div>
+  </div>
+</section>
+
+<section class="about section-pad" id="nosotros">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img reveal">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80" alt="Team Predicteer">
+      </div>
+      <div class="reveal">
+        <span class="eyebrow white">Nosotros</span>
+        <h2 class="section-h" style="color:#fff">Especialistas en convertir datos en decisiones</h2>
+        <p class="section-sub" style="color:rgba(255,255,255,0.5);margin-bottom:14px">Predicteer Decisions nació con una convicción: las empresas latinoamericanas tienen los datos para competir al nivel de los grandes, pero no siempre tienen los sistemas para usarlos.</p>
+        <p class="section-sub" style="color:rgba(255,255,255,0.5)">Nos especializamos exclusivamente en predicción comercial — no somos una agencia genérica de IA. Cada proyecto lo entregamos en 2 semanas con un equipo dedicado.</p>
+        <div class="about-vals">
+          <div class="about-val"><h4>Especialización</h4><p>Solo predicción comercial, no proyectos genéricos de IA.</p></div>
+          <div class="about-val"><h4>Velocidad</h4><p>Resultados en 2 semanas, no en 6 meses.</p></div>
+          <div class="about-val"><h4>Privacidad</h4><p>Tus datos no se comparten ni se usan para otros modelos.</p></div>
+          <div class="about-val"><h4>Impacto medible</h4><p>Métricas claras de retorno sobre inversión desde el día 1.</p></div>
+        </div>
+        <a href="https://www.linkedin.com/company/predicteer-decisions" target="_blank" class="about-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact section-pad" id="contacto">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal">
+        <span class="eyebrow white">Contacto</span>
+        <h2>Hablemos sobre<br>tus datos</h2>
+        <p class="contact-sub">Cuéntanos tu situación y en menos de 24 horas te decimos si podemos ayudarte.</p>
+        <div class="channels">
+          <a href="https://www.linkedin.com/company/predicteer-decisions" target="_blank" class="channel">
+            <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+            <div><div class="ch-sub">LinkedIn</div><div>Predicteer Decisions</div></div>
+          </a>
+          <a href="https://instagram.com/predicteer-decisions" target="_blank" class="channel">
+            <div class="ch-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
+            <div><div class="ch-sub">Instagram</div><div>@predicteer-decisions</div></div>
+          </a>
+          <a href="mailto:predicteerdecisions@gmail.com" class="channel">
+            <div class="ch-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="ch-sub">Email</div><div>predicteerdecisions@gmail.com</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="cta-block reveal">
+        <div style="width:50px;height:50px;background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.28);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L22 12L12 22L2 12L12 2Z"/><path d="M12 6L18 12L12 18L6 12L12 6Z"/><path d="M12 9V15M10 11L12 9L14 11"/></svg>
+        </div>
+        <h3>¿Tienes los datos?<br>Nosotros hacemos el resto.</h3>
+        <p>Completa el diagnóstico en 3 minutos. Sin costo, sin compromiso.</p>
+        <a href="diagnostico.html" class="btn-white" style="justify-content:center;width:100%;font-size:15px;padding:16px">Hacer diagnóstico gratuito →</a>
+        <p style="font-size:11px;color:rgba(255,255,255,0.28);margin-top:12px">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="f-logo">
+        <div style="width:26px;height:26px;background:rgba(255,255,255,0.07);border-radius:6px;display:flex;align-items:center;justify-content:center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 2L22 12L12 22L2 12Z"/><path d="M12 6L18 12L12 18L6 12Z"/><path d="M12 9V15M10 11L12 9L14 11" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="f-brand">PREDICTEER DECISIONS</span>
+      </div>
+      <span class="f-tag">Predict · Steer · Execute</span>
+      <span class="f-copy">© 2025 · Construido con datos, no con intuición.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-ov" id="m-c1" onclick="if(event.target===this)closeM('c1')">
+  <div class="modal">
+    <button class="mod-close" onclick="closeM('c1')">✕</button>
+    <div class="mod-img"><img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&q=75" alt="Warehouse"></div>
+    <div class="mod-body">
+      <span class="mod-tag">Distribución · LOOO</span>
+      <h2>Reducción de pérdida de clientes</h2>
+      <p class="mod-lead">Empresa de distribución con 2,000+ clientes detecta abandono en riesgo y actúa antes de perderlos.</p>
+      <div class="mod-mets">
+        <div class="mod-met"><span class="v">-22%</span><span class="l">reducción de churn</span></div>
+        <div class="mod-met"><span class="v">+18%</span><span class="l">retención clientes clave</span></div>
+        <div class="mod-met"><span class="v">2 sem</span><span class="l">implementación</span></div>
+      </div>
+      <ul class="mod-list">
+        <li>Modelo predictivo con 3 años de historial de compras</li>
+        <li>Score de riesgo por cliente actualizado semanalmente</li>
+        <li>Alertas automáticas al equipo comercial para intervenir a tiempo</li>
+        <li>Campañas de retención dirigidas a los segmentos de mayor riesgo</li>
+      </ul>
+      <a href="diagnostico.html" class="btn-blue" style="width:100%;justify-content:center;padding:14px;font-size:15px">Quiero un resultado similar →</a>
+    </div>
+  </div>
+</div>
+<div class="modal-ov" id="m-c2" onclick="if(event.target===this)closeM('c2')">
+  <div class="modal">
+    <button class="mod-close" onclick="closeM('c2')">✕</button>
+    <div class="mod-img"><img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=700&q=75" alt="Finance"></div>
+    <div class="mod-body">
+      <span class="mod-tag">Fintech · Logoipsum</span>
+      <h2>Predicción de ventas con 87% de precisión</h2>
+      <p class="mod-lead">Empresa fintech planifica inventario, campañas y recursos con semanas de anticipación gracias a predicción de demanda.</p>
+      <div class="mod-mets">
+        <div class="mod-met"><span class="v">87%</span><span class="l">precisión predicciones</span></div>
+        <div class="mod-met"><span class="v">-25%</span><span class="l">quiebres de inventario</span></div>
+        <div class="mod-met"><span class="v">2 sem</span><span class="l">implementación</span></div>
+      </div>
+      <ul class="mod-list">
+        <li>Modelo de predicción con datos históricos + variables externas</li>
+        <li>Proyecciones semanales y mensuales con intervalos de confianza</li>
+        <li>Integración con ERP para alertas automáticas de reabastecimiento</li>
+        <li>Panel de control para operaciones y marketing</li>
+      </ul>
+      <a href="diagnostico.html" class="btn-blue" style="width:100%;justify-content:center;padding:14px;font-size:15px">Evaluar mi caso →</a>
+    </div>
+  </div>
+</div>
+<div class="modal-ov" id="m-c3" onclick="if(event.target===this)closeM('c3')">
+  <div class="modal">
+    <button class="mod-close" onclick="closeM('c3')">✕</button>
+    <div class="mod-img"><img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=700&q=75" alt="Sales team"></div>
+    <div class="mod-body">
+      <span class="mod-tag">SaaS · IPSUM</span>
+      <h2>+35% en conversión comercial</h2>
+      <p class="mod-lead">Empresa SaaS prioriza leads con mayor probabilidad de conversión y duplica la eficiencia de su equipo comercial.</p>
+      <div class="mod-mets">
+        <div class="mod-met"><span class="v">+35%</span><span class="l">conversión comercial</span></div>
+        <div class="mod-met"><span class="v">-40%</span><span class="l">tiempo por lead</span></div>
+        <div class="mod-met"><span class="v">2 sem</span><span class="l">implementación</span></div>
+      </div>
+      <ul class="mod-list">
+        <li>Score de probabilidad de compra para cada lead</li>
+        <li>Segmentación automática: alta, media y baja probabilidad</li>
+        <li>Integración con CRM para mostrar el score en el pipeline</li>
+        <li>Playbook de acciones según el segmento de cada lead</li>
+      </ul>
+      <a href="diagnostico.html" class="btn-blue" style="width:100%;justify-content:center;padding:14px;font-size:15px">Mejorar mi conversión →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.case-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='44px';ring.style.height='44px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='30px';ring.style.height='30px'});
+});
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>40));
+function openM(id){document.getElementById('m-'+id).classList.add('open');document.body.style.overflow='hidden'}
+function closeM(id){document.getElementById('m-'+id).classList.remove('open');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-ov.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow=''}});
+</script>
+</body>
+</html>

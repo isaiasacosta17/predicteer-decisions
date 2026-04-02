@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casos de Aplicación — Predicteer Decisions</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0f172a;--blue:#1a56db;--blue2:#1e40af;--blue-light:#dbeafe;
+  --light:#fff;--light2:#f7f8fa;--text:#0f172a;--mid:#374151;--muted:#6b7280;
+  --green:#059669;--border:rgba(0,0,0,0.08);--shadow:0 4px 24px rgba(0,0,0,0.08);--shadow-lg:0 16px 60px rgba(0,0,0,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--light)}
+img{display:block;max-width:100%}
+.cursor{position:fixed;width:8px;height:8px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1.5px solid rgba(26,86,219,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-logo-text .brand{font-size:15px;font-weight:800;color:var(--navy);display:block;line-height:1.1}
+.nav-logo-text .tag{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--mid);text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--navy)}
+.nav-cta{background:var(--blue);color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:var(--blue2)}
+.container{max-width:1100px;margin:0 auto;padding:0 48px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+/* PAGE HEADER */
+.page-header{background:var(--navy);padding:120px 0 80px;text-align:center}
+.page-header .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#93c5fd;display:block;margin-bottom:16px}
+.page-header h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px}
+.page-header p{font-size:18px;color:rgba(255,255,255,0.55);max-width:520px;margin:0 auto;line-height:1.6}
+/* CASES */
+.cases-section{padding:80px 0}
+.case-block{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;padding:64px 0;border-bottom:1px solid var(--border)}
+.case-block:last-child{border-bottom:none}
+.case-block.reverse{direction:rtl}
+.case-block.reverse > *{direction:ltr}
+.case-img{border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg)}
+.case-img img{width:100%;height:380px;object-fit:cover}
+.case-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:block}
+.case-title{font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--navy);letter-spacing:-0.02em;line-height:1.1;margin-bottom:8px}
+.case-subtitle{font-size:16px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.case-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.case-list li{font-size:15px;color:var(--mid);display:flex;gap:12px;align-items:flex-start;line-height:1.5}
+.case-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:8px}
+.case-range{display:inline-flex;align-items:center;gap:6px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.18);color:var(--green);font-size:13px;font-weight:700;padding:6px 14px;border-radius:100px;margin-bottom:24px}
+.btn-blue{background:var(--blue);color:#fff;font-size:14px;font-weight:700;padding:13px 28px;border-radius:9px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-blue:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,86,219,0.3)}
+/* BOTTOM CTA */
+.bottom-cta{background:var(--navy);padding:80px 0;text-align:center}
+.bottom-cta h2{font-size:clamp(28px,4vw,48px);font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:12px}
+.bottom-cta p{font-size:16px;color:rgba(255,255,255,0.5);margin-bottom:32px}
+.btn-white{background:#fff;color:var(--navy);font-size:15px;font-weight:700;padding:15px 32px;border-radius:10px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
+.btn-white:hover{transform:translateY(-2px)}
+footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.f-brand{font-size:13px;font-weight:700;color:rgba(255,255,255,0.6)}
+.f-copy{font-size:11px;color:rgba(255,255,255,0.25)}
+@media(max-width:900px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .container{padding:0 20px}
+  .case-block{grid-template-columns:1fr}.case-block.reverse{direction:ltr}
+  footer{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L22 12L12 22L2 12L12 2Z" stroke="white" stroke-width="1.5"/>
+        <path d="M12 6L18 12L12 18L6 12L12 6Z" stroke="#3b82f6" stroke-width="1.5"/>
+        <path d="M12 9V15" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M10 11L12 9L14 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">
+      <span class="brand">PREDICTEER</span>
+      <span class="tag">Predict · Steer · Execute</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#problemas">Problemas</a>
+    <a href="index.html#soluciones">Soluciones</a>
+    <a href="casos.html" class="active">Casos</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+  <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <span class="eyebrow">Casos de aplicación</span>
+    <h1>Lo que puedes lograr<br>con tus datos</h1>
+    <p>Tres problemas comerciales frecuentes que los modelos predictivos resuelven con los datos que ya tienes.</p>
+  </div>
+</div>
+
+<section class="cases-section">
+  <div class="container">
+
+    <!-- CASO 1 -->
+    <div class="case-block reveal">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80" alt="Reducción de churn">
+      </div>
+      <div>
+        <span class="case-eyebrow">Caso 01 — Retención de clientes</span>
+        <h2 class="case-title">Reduce la pérdida de clientes antes de que ocurra</h2>
+        <p class="case-subtitle">Identifica clientes en riesgo de abandono</p>
+        <div class="case-range">Puede reducir la pérdida de clientes entre 10% y 25%</div>
+        <ul class="case-list">
+          <li>Detecta clientes con mayor probabilidad de dejar de comprar</li>
+          <li>Permite actuar antes de perder clientes valiosos</li>
+          <li>Prioriza campañas de retención en clientes clave</li>
+          <li>Puede reducir la pérdida de clientes entre 10% y 25%</li>
+        </ul>
+        <a href="diagnostico.html" class="btn-blue">Evaluar este caso en mi empresa →</a>
+      </div>
+    </div>
+
+    <!-- CASO 2 -->
+    <div class="case-block reverse reveal">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Predicción de ventas">
+      </div>
+      <div>
+        <span class="case-eyebrow">Caso 02 — Predicción de ventas</span>
+        <h2 class="case-title">Predice tus ventas con mayor precisión</h2>
+        <p class="case-subtitle">Planea inventario, marketing y producción con anticipación</p>
+        <div class="case-range">Puede reducir quiebres de inventario entre 20% y 30%</div>
+        <ul class="case-list">
+          <li>Predicción de ventas basada en datos históricos</li>
+          <li>Mayor visibilidad de demanda futura</li>
+          <li>Mejor planificación de inventario y campañas comerciales</li>
+          <li>Puede reducir quiebres de inventario entre 20% y 30%</li>
+        </ul>
+        <a href="diagnostico.html" class="btn-blue">Evaluar este caso en mi empresa →</a>
+      </div>
+    </div>
+
+    <!-- CASO 3 -->
+    <div class="case-block reveal">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80" alt="Eficiencia comercial">
+      </div>
+      <div>
+        <span class="case-eyebrow">Caso 03 — Eficiencia comercial</span>
+        <h2 class="case-title">Mejora la eficiencia del equipo comercial</h2>
+        <p class="case-subtitle">Prioriza los clientes con mayor probabilidad de compra</p>
+        <div class="case-range">Puede aumentar la conversión comercial entre 15% y 40%</div>
+        <ul class="case-list">
+          <li>Identifica leads con mayor probabilidad de conversión</li>
+          <li>Permite enfocar esfuerzos comerciales en las mejores oportunidades</li>
+          <li>Mejora la productividad del equipo de ventas</li>
+          <li>Puede aumentar la conversión comercial entre 15% y 40%</li>
+        </ul>
+        <a href="diagnostico.html" class="btn-blue">Evaluar este caso en mi empresa →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="bottom-cta">
+  <div class="container">
+    <h2>¿Cuál de estos casos aplica<br>a tu empresa?</h2>
+    <p>Completa el diagnóstico en 3 minutos y descúbrelo sin costo.</p>
+    <a href="diagnostico.html" class="btn-white">Hacer diagnóstico gratuito →</a>
+  </div>
+</div>
+
+<footer>
+  <span class="f-brand">PREDICTEER DECISIONS</span>
+  <span class="f-copy">© 2025 · Predict · Steer · Execute</span>
+</footer>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='44px';ring.style.height='44px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='30px';ring.style.height='30px'});
+});
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
