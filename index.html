@@ -45,12 +45,15 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding-top:112px}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%;min-width:100%;min-height:100%}
-.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,15,28,0.9) 45%,rgba(10,15,28,0.3) 100%)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,15,28,0.92) 0%,rgba(10,15,28,0.75) 100%)}
 .hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 48px;width:100%}
 .hero h1{font-size:clamp(44px,5.5vw,76px);font-weight:800;line-height:1.05;letter-spacing:-0.03em;color:#fff;max-width:640px;margin-bottom:20px}
 .hero h1 span{font-family:'Lora',serif;font-style:italic;font-weight:400;color:#93c5fd}
 .hero-sub{font-size:18px;color:rgba(255,255,255,0.82);max-width:460px;line-height:1.65;margin-bottom:36px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:56px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+.hero-proof{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hero-proof-item{font-size:13px;color:rgba(255,255,255,0.65);font-weight:500}
+.hero-proof-dot{width:3px;height:3px;background:rgba(255,255,255,0.3);border-radius:50%;flex-shrink:0}
 .btn-white{background:#fff;color:var(--navy);font-size:15px;font-weight:700;padding:15px 32px;border-radius:10px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
 .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.25)}
 .btn-ghost{background:transparent;color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.3);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
@@ -254,20 +257,21 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
 
 <section class="hero">
   <div class="hero-bg">
-    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80" alt="Data analytics">
+    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80" alt="Data analytics">
   </div>
   <div class="hero-content">
     <h1>Toma decisiones <span>con datos,</span><br>no con intuición</h1>
-    <p class="hero-sub">En 2 semanas convertimos los datos de tu empresa en un sistema que predice ventas, clientes o demanda.</p>
+    <p class="hero-sub">Convertimos los datos de tu empresa en predicciones de ventas y comportamiento de clientes.</p>
     <div class="hero-actions">
       <a href="diagnostico.html" class="btn-white">Hacer diagnóstico gratuito →</a>
       <a href="casos.html" class="btn-ghost">Ver casos de uso</a>
     </div>
-    <div class="hero-stats reveal">
-      <div class="hero-stat"><div class="num">2 semanas</div><div class="lbl">para el primer resultado</div></div>
-      <div class="hero-stat"><div class="num">87%</div><div class="lbl">precisión promedio</div></div>
-      <div class="hero-stat"><div class="num">3x</div><div class="lbl">retorno típico</div></div>
-      <div class="hero-stat"><div class="num">5</div><div class="lbl">cupos este mes</div></div>
+    <div class="hero-proof">
+      <span class="hero-proof-item">2 semanas de implementación</span>
+      <span class="hero-proof-dot"></span>
+      <span class="hero-proof-item">Sin compromiso</span>
+      <span class="hero-proof-dot"></span>
+      <span class="hero-proof-item">5 cupos disponibles</span>
     </div>
   </div>
 </section>
