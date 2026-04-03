@@ -24,7 +24,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.nav-logo-text .brand{font-size:15px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);display:block;line-height:1.1}
+.nav-logo-text .brand{font-size:14px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);display:block;line-height:1.1}
 .nav-logo-text .tag{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
 .nav-links{display:flex;align-items:center;gap:28px}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
@@ -197,9 +197,17 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
 @media(max-width:900px){
   nav{padding:0 20px}.nav-links{display:none}
   .hamburger{display:flex}
-  .nav-cta{font-size:12px;padding:8px 14px}
+  .nav-cta{display:none}
+  .hamburger span{width:26px;height:2.5px}
+  .nav-logo-text .brand{font-size:12px}
   .hero-content,.container{padding:0 20px}
-  .hero h1{font-size:38px}
+  .hero h1{font-size:clamp(28px,7vw,42px)}
+  .hero-sub{font-size:15px;max-width:100%}
+  .hero-actions{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:20px}
+  .btn-white{font-size:14px;padding:12px 22px;width:auto;display:inline-flex}
+  .btn-ghost{font-size:14px;padding:11px 20px;width:auto;display:inline-flex}
+  .hero-proof{gap:8px}
+  .hero-proof-item{font-size:11px}
   .prob-intro,.del-intro,.about-grid,.contact-grid,.urg-inner2{grid-template-columns:1fr}
   .prob-grid,.sol-grid,.cases-grid,.about-vals,.mod-mets{grid-template-columns:1fr}
   .del-img,.about-img,.prob-img{display:none}
@@ -230,7 +238,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
       </svg>
     </div>
     <div class="nav-logo-text">
-      <span class="brand">PREDICTEER</span>
+      <span class="brand">PREDICTEER DECISIONS</span>
       <span class="tag">Predict · Steer · Execute</span>
     </div>
   </a>
