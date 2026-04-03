@@ -215,6 +215,35 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
   .section-pad{padding:64px 0}
   .section-h{font-size:26px}
 }
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,0.08);transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:36px;height:36px;background:#0f172a;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-logo-text .brand{font-size:15px;font-weight:800;letter-spacing:-0.01em;color:#0f172a;display:block;line-height:1.1}
+.nav-logo-text .tag{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#1a56db}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;font-weight:500;color:#374151;text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:#0f172a;font-weight:600}
+.nav-cta{background:#1a56db;color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:#1e40af}
+.hamburger{display:none;flex-direction:column;gap:6px;background:none;border:none;padding:8px;cursor:pointer;z-index:201}
+.hamburger span{display:block;width:26px;height:2.5px;background:#0f172a;border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:translateY(8.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8.5px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:22px;font-weight:700;color:#0f172a;text-decoration:none}
+.mob-close{position:absolute;top:24px;right:24px;background:none;border:none;font-size:28px;color:#0f172a;cursor:pointer}
+.mob-cta{background:#1a56db!important;color:#fff!important;padding:16px 40px;border-radius:12px;margin-top:8px}
+@media(max-width:900px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .nav-cta{display:none}
+  .hamburger{display:flex}
+  .nav-logo-text .tag{display:none}
+  .nav-logo-text .brand{font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -228,15 +257,40 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
 </div>
 
 <nav id="navbar">
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L22 12L12 22L2 12L12 2Z" stroke="white" stroke-width="1.5"/>
-        <path d="M12 6L18 12L12 18L6 12L12 6Z" stroke="#3b82f6" stroke-width="1.5"/>
-        <path d="M12 9V15" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M10 11L12 9L14 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L22 12L12 22L2 12Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M12 7L17 12L12 17L7 12Z" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 10V14M10 12L12 10L14 12" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg></div>
+    <div class="nav-logo-text">
+      <span class="brand">PREDICTEER DECISIONS</span>
+      <span class="tag">Predict · Steer · Execute</span>
     </div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Inicio</a>
+    <a href="index.html#problemas">Problemas</a>
+    <a href="index.html#soluciones">Soluciones</a>
+    <a href="casos.html">Casos</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+  <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMob()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="index.html" onclick="closeMob()">Inicio</a>
+  <a href="index.html#problemas" onclick="closeMob()">Problemas</a>
+  <a href="index.html#soluciones" onclick="closeMob()">Soluciones</a>
+  <a href="casos.html" onclick="closeMob()">Casos</a>
+  <a href="nosotros.html" onclick="closeMob()">Nosotros</a>
+  <a href="contacto.html" onclick="closeMob()">Contacto</a>
+  <a href="diagnostico.html" class="mob-cta" onclick="closeMob()">Diagnóstico gratuito →</a>
+</div>
     <div class="nav-logo-text">
       <span class="brand">PREDICTEER DECISIONS</span>
       <span class="tag">Predict · Steer · Execute</span>
@@ -265,7 +319,7 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);paddin
 
 <section class="hero">
   <div class="hero-bg">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80" alt="Data analytics">
+    <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1600&q=80" alt="Data analytics">
   </div>
   <div class="hero-content">
     <h1>Toma decisiones <span>con datos,</span><br>no con intuición</h1>
@@ -572,8 +626,8 @@ window.addEventListener('scroll',()=>document.getElementById('navbar').classList
 function openM(id){document.getElementById('m-'+id).classList.add('open');document.body.style.overflow='hidden'}
 function closeM(id){document.getElementById('m-'+id).classList.remove('open');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-ov.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow=''}})
-function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
-function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')};
+
+;
 </script>
 </body>
 </html>
