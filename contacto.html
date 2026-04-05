@@ -63,6 +63,21 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
   .diag-cta{padding:40px 24px}
   footer{padding:24px 20px}
 }
+/* MOBILE NAV */
+.hamburger{display:none;flex-direction:column;gap:6px;background:none;border:none;padding:6px;cursor:pointer}
+.hamburger span{display:block;width:24px;height:2.5px;background:var(--navy);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(8.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8.5px) rotate(-45deg)}
+.mob-menu{display:none;position:fixed;inset:0;background:#fff;z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:22px;font-weight:700;color:var(--navy);text-decoration:none}
+.mob-x{position:absolute;top:20px;right:20px;background:none;border:none;font-size:26px;color:var(--navy);cursor:pointer}
+.mob-cta-link{background:var(--blue)!important;color:#fff!important;padding:14px 36px;border-radius:10px;margin-top:8px}
+@media(max-width:900px){
+  .nav-cta{display:none!important}
+  .hamburger{display:flex!important}
+}
 </style>
 </head>
 <body>
@@ -89,8 +104,20 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
     <a href="contacto.html" class="active">Contacto</a>
   </div>
   <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+  <button class="hamburger" id="hbg" onclick="openMob()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
-
+<div class="mob-menu" id="mob">
+  <button class="mob-x" onclick="closeMob()">✕</button>
+  <a href="index.html" onclick="closeMob()">Inicio</a>
+  <a href="index.html#problemas" onclick="closeMob()">Problemas</a>
+  <a href="index.html#soluciones" onclick="closeMob()">Soluciones</a>
+  <a href="casos.html" onclick="closeMob()">Casos</a>
+  <a href="nosotros.html" onclick="closeMob()">Nosotros</a>
+  <a href="contacto.html" onclick="closeMob()">Contacto</a>
+  <a href="diagnostico.html" class="mob-cta-link" onclick="closeMob()">Diagnóstico gratuito →</a>
+</div>
 <div class="page-header">
   <span class="eyebrow">Contacto</span>
   <h1>Hablemos sobre tus datos</h1>
@@ -150,7 +177,8 @@ document.querySelectorAll('a,button').forEach(el=>{
 });
 const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.remove('animate');x.target.classList.add('visible')}}),{threshold:0.05,rootMargin:'0px 0px -50px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('animate');obs.observe(el)});
+function openMob(){document.getElementById('mob').classList.add('open');document.getElementById('hbg').classList.add('open');document.body.style.overflow='hidden'}
+function closeMob(){document.getElementById('mob').classList.remove('open');document.getElementById('hbg').classList.remove('open');document.body.style.overflow=''}
 </script>
 </body>
 </html>
-
