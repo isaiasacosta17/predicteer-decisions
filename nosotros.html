@@ -15,8 +15,6 @@
 html{scroll-behavior:smooth}
 body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--light)}
 img{display:block;max-width:100%}
-
-
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .nav-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
@@ -30,7 +28,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 .container{max-width:1100px;margin:0 auto;padding:0 48px}
 .reveal{opacity:1;transform:none}.reveal.animate{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
-/* PAGE HEADER */
 .page-header{background:var(--navy);padding:120px 0 80px}
 .page-header .inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
 .page-header .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#93c5fd;display:block;margin-bottom:16px}
@@ -38,13 +35,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 .page-header p{font-size:17px;color:rgba(255,255,255,0.78);line-height:1.65}
 .hero-img{border-radius:20px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,0.5)}
 .hero-img img{width:100%;height:440px;object-fit:cover;filter:brightness(0.85)}
-/* CONTENT */
 .content-section{padding:80px 0}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
 .section-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:block}
 .section-title{font-size:clamp(26px,3vw,38px);font-weight:800;color:var(--navy);letter-spacing:-0.02em;line-height:1.1;margin-bottom:14px}
 .section-body{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:16px}
-/* VALUES */
 .values-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
 .value-card{background:var(--light2);border:1px solid var(--border);border-radius:14px;padding:28px;transition:all .25s}
 .value-card:hover{background:#fff;box-shadow:var(--shadow);transform:translateY(-2px)}
@@ -52,12 +47,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:72px;display:flex;ali
 .value-num::before{content:'';width:20px;height:1px;background:var(--blue)}
 .value-card h4{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--navy)}
 .value-card p{font-size:13px;color:var(--muted);line-height:1.55}
-/* LINKEDIN */
 .linkedin-block{background:var(--navy);border-radius:16px;padding:32px;margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .linkedin-block p{font-size:15px;color:rgba(255,255,255,0.6);max-width:360px;line-height:1.6}
 .btn-linkedin{background:#0a66c2;color:#fff;font-size:14px;font-weight:700;padding:12px 24px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;white-space:nowrap}
 .btn-linkedin:hover{background:#004182;transform:translateY(-1px)}
-/* CTA */
 .bottom-cta{background:var(--light2);border-top:1px solid var(--border);padding:80px 0;text-align:center}
 .bottom-cta h2{font-size:clamp(26px,3.5vw,42px);font-weight:800;color:var(--navy);letter-spacing:-0.02em;margin-bottom:12px}
 .bottom-cta p{font-size:16px;color:var(--muted);margin-bottom:32px}
@@ -72,6 +65,21 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
   .page-header .inner,.two-col{grid-template-columns:1fr}
   .hero-img{display:none}.values-grid{grid-template-columns:1fr}
   footer{padding:24px 20px}
+}
+/* MOBILE NAV */
+.hamburger{display:none;flex-direction:column;gap:6px;background:none;border:none;padding:6px;cursor:pointer}
+.hamburger span{display:block;width:24px;height:2.5px;background:var(--navy);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(8.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-8.5px) rotate(-45deg)}
+.mob-menu{display:none;position:fixed;inset:0;background:#fff;z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:22px;font-weight:700;color:var(--navy);text-decoration:none}
+.mob-x{position:absolute;top:20px;right:20px;background:none;border:none;font-size:26px;color:var(--navy);cursor:pointer}
+.mob-cta-link{background:var(--blue)!important;color:#fff!important;padding:14px 36px;border-radius:10px;margin-top:8px}
+@media(max-width:900px){
+  .nav-cta{display:none!important}
+  .hamburger{display:flex!important}
 }
 </style>
 </head>
@@ -99,7 +107,20 @@ footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);paddin
     <a href="contacto.html">Contacto</a>
   </div>
   <a href="diagnostico.html" class="nav-cta">Diagnóstico gratuito →</a>
+  <button class="hamburger" id="hbg" onclick="openMob()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mob-menu" id="mob">
+  <button class="mob-x" onclick="closeMob()">✕</button>
+  <a href="index.html" onclick="closeMob()">Inicio</a>
+  <a href="index.html#problemas" onclick="closeMob()">Problemas</a>
+  <a href="index.html#soluciones" onclick="closeMob()">Soluciones</a>
+  <a href="casos.html" onclick="closeMob()">Casos</a>
+  <a href="nosotros.html" onclick="closeMob()">Nosotros</a>
+  <a href="contacto.html" onclick="closeMob()">Contacto</a>
+  <a href="diagnostico.html" class="mob-cta-link" onclick="closeMob()">Diagnóstico gratuito →</a>
+</div>
 
 <div class="page-header">
   <div class="container">
@@ -169,6 +190,8 @@ document.querySelectorAll('a,button').forEach(el=>{
 });
 const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.remove('animate');x.target.classList.add('visible')}}),{threshold:0.05,rootMargin:'0px 0px -50px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('animate');obs.observe(el)});
+function openMob(){document.getElementById('mob').classList.add('open');document.getElementById('hbg').classList.add('open');document.body.style.overflow='hidden'}
+function closeMob(){document.getElementById('mob').classList.remove('open');document.getElementById('hbg').classList.remove('open');document.body.style.overflow=''}
 </script>
 </body>
 </html>
