@@ -723,16 +723,38 @@
     document.getElementById('result' + level).classList.add('active');
     window.scrollTo({ top: document.getElementById('survey').offsetTop - 20, behavior: 'smooth' });
 
-    const formData = {
-      name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
-      company: document.getElementById('company').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      answers, score, level,
-      timestamp: new Date().toISOString()
+    const nivelLabel = level === 'High' ? 'Alta aplicabilidad' : level === 'Mid' ? 'Media aplicabilidad' : 'Baja aplicabilidad';
+
+    const payload = {
+      fecha: new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }),
+      nombre: document.getElementById('firstName').value.trim(),
+      apellido: document.getElementById('lastName').value.trim(),
+      empresa: document.getElementById('company').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      telefono: document.getElementById('phone').value.trim() || '—',
+      score: score,
+      nivel: nivelLabel,
+      problema: answers.problem || '—',
+      donde_datos: answers.dataStorage || '—',
+      meses_datos: answers.dataAge || '—',
+      clientes: answers.clients || '—',
+      historial: answers.dataHistory || '—',
+      recurrente: answers.recurring === true ? 'Sí' : answers.recurring === false ? 'No' : '—',
+      equipo: answers.team === true ? 'Sí' : answers.team === false ? 'No' : '—'
     };
-    localStorage.setItem('predicteer_lead', JSON.stringify(formData));
-    console.log('Lead:', formData);
+
+    // Save locally
+    localStorage.setItem('predicteer_lead', JSON.stringify(payload));
+
+    // Send to Make.com webhook → Google Sheets
+    fetch('https://hook.us2.make.com/rog411erjm8b4fq1rxxq5ioqy64hkmrx', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(r => {
+      if(r.ok) console.log('Lead enviado a Make.com ✓');
+      else console.warn('Error enviando a Make.com:', r.status);
+    }).catch(e => console.warn('Error de red:', e));
   }
 
   const CALENDLY_URL = 'https://calendly.com/isaiasacosta173/diagnostico-predictivo-gratuito';
